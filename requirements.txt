@@ -1,6 +1,7 @@
 amqp==5.3.1
 asgiref==3.9.1
 billiard==4.2.1
+black==25.1.0
 celery==5.5.3
 click==8.2.1
 click-didyoumean==0.3.1
@@ -10,12 +11,17 @@ colorama==0.4.6
 Django==5.2.4
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
+dotenv==0.9.9
 kombu==5.5.4
+mypy_extensions==1.1.0
 packaging==25.0
+pathspec==0.12.1
 pillow==11.3.0
+platformdirs==4.3.8
 prompt_toolkit==3.0.51
 PyJWT==2.9.0
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 redis==6.2.0
 six==1.17.0
 sqlparse==0.5.3

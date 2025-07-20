@@ -1,12 +1,9 @@
-from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.db import models
-
-class User(AbstractUser):
-    email = models.EmailField(unique=True)
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics', blank=True)
 
@@ -15,9 +12,8 @@ class Profile(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    following = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
-    created_at = models.DateTimeField(auto_now_add=True)
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
+    following = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followers')
 
 
 class Hashtag(models.Model):
@@ -28,7 +24,7 @@ class Hashtag(models.Model):
 
 
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     hashtag = models.ForeignKey(Hashtag, on_delete=models.CASCADE)
@@ -39,14 +35,14 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class SchedulePost(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     schedule_time = models.TimeField()
     create = models.BooleanField(default=False)
