@@ -36,7 +36,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -44,7 +44,6 @@ class Comment(models.Model):
 class SchedulePost(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
-    schedule_time = models.TimeField()
+    schedule_time = models.DateTimeField()
     create = models.BooleanField(default=False)
-
-
+    is_post = models.BooleanField(default=False)
