@@ -14,11 +14,9 @@ class ProfileListSerializers(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'user', "profile_pic", "followers_count", "following_count")
 
-    @staticmethod
     def get_followers_count(self, obj):
         return obj.user.followers.count()
 
-    @staticmethod
     def get_following_count(self, obj):
         return obj.user.following.count()
 
@@ -39,14 +37,12 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'user', "bio", "profile_pic", 'followers', 'followings')
 
-    @staticmethod
     def get_followers(self, obj):
-        followers = Follow.objects.filter(following__user=obj)
+        followers = Follow.objects.filter(following=obj.user)
         return FollowSerializer(followers, many=True).data
 
-    @staticmethod
     def get_followings(self, obj):
-        following = Follow.objects.filter(following__user=obj)
+        following = Follow.objects.filter(following=obj.user)
         return FollowSerializer(following, many=True).data
 
 
@@ -61,7 +57,7 @@ class PostListSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'user', "content", "comments_count")
 
-    @staticmethod
+
     def get_comments_count(self, obj):
         return obj.comments.count()
 
@@ -76,9 +72,14 @@ class PostDetailSerializer(serializers.ModelSerializer):
     hashtag = HashtagDetailSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ('id', 'user', "content", "created_at", "hashtag", "image")
+        fields = ('id', 'user', "content", "created_at", "hashtag", "comments", "image")
 
-    @staticmethod
     def get_comments(self, obj):
         comments = Comment.objects.filter(post=obj)
         return CommentSerializer(comments, many=True).data
+
+
+class SchedulePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('id', 'user', "content", "is_post", "schedule_time")

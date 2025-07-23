@@ -27,7 +27,7 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    hashtag = models.ForeignKey(Hashtag, on_delete=models.CASCADE)
+    hashtag = models.ForeignKey(Hashtag, on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(upload_to='posts', blank=True)
 
     def __str__(self):

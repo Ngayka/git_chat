@@ -1,17 +1,21 @@
 from django.contrib.auth import get_user_model
+from django.db import models
+from django.db.models import Q
+
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
-from chat.models import Profile, Follow, Post
+from chat.models import Profile, Follow, Post, SchedulePost, Hashtag
 from chat.paginations import StandardResultsSetPagination
-from chat.permissions import IsOwnerOrReadOnly
+from chat.permissions import IsOwnerOrReadOnly, SchedulePostPermission
 from chat.serializers import (
     ProfileListSerializers,
     ProfileDetailSerializer,
     FollowSerializer,
     PostListSerializer,
     PostDetailSerializer,
+    HashtagDetailSerializer,
 )
 
 User = get_user_model()
@@ -35,8 +39,18 @@ class FollowViewSet(viewsets.ModelViewSet):
     serializer_class = FollowSerializer
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
     pagination_class = StandardResultsSetPagination
+
     def get_queryset(self):
-        return Follow.objects.filter(following__user=self.request.user)
+        profile = self.request.user.profile
+        user = self.request.user
+        follow_type = self.request.query_params.get("type")
+
+        if follow_type == "followers":
+            return Follow.objects.filter(follower=user)
+        if follow_type == "following":
+            return Follow.objects.filter(following=user)
+        return Follow.objects.all()
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -56,3 +70,20 @@ class PostViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAuthenticated(), IsOwnerOrReadOnly()]
         return [IsAuthenticated()]
+
+class SchedulePostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostListSerializer
+    permission_classes = [SchedulePostPermission]
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return SchedulePost.objects.filter(
+                models.Q(is_post=True) & models.Q(user=user)
+            )
+        return SchedulePost.objects.filter(is_post=True)
+
+class HashtagViewSet(viewsets.ModelViewSet):
+    queryset = Hashtag.objects.all()
+    serializer_class = HashtagDetailSerializer
