@@ -6,13 +6,15 @@ from user.serializers import UserSerializer, UserListSerializer
 
 User = get_user_model()
 
+
 class ProfileListSerializers(serializers.ModelSerializer):
     user = UserListSerializer(read_only=True)
     followers_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
-        fields = ('id', 'user', "profile_pic", "followers_count", "following_count")
+        fields = ("id", "user", "profile_pic", "followers_count", "following_count")
 
     def get_followers_count(self, obj):
         return obj.user.followers.count()
@@ -24,18 +26,20 @@ class ProfileListSerializers(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     follower = UserListSerializer(read_only=True)
     following = UserListSerializer(read_only=True)
+
     class Meta:
         model = Follow
-        fields = ('id', 'follower', 'following')
+        fields = ("id", "follower", "following")
 
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     followers = serializers.SerializerMethodField()
     followings = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
-        fields = ('id', 'user', "bio", "profile_pic", 'followers', 'followings')
+        fields = ("id", "user", "bio", "profile_pic", "followers", "followings")
 
     def get_followers(self, obj):
         followers = Follow.objects.filter(following=obj.user)
@@ -49,17 +53,19 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
 class HashtagDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hashtag
-        fields = ['name']
+        fields = ["name"]
+
 
 class PostListSerializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ('id', 'user', "content", "comments_count")
-
+        fields = ("id", "user", "content", "comments_count")
 
     def get_comments_count(self, obj):
         return obj.comments.count()
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,9 +76,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     hashtag = HashtagDetailSerializer(read_only=True)
+
     class Meta:
         model = Post
-        fields = ('id', 'user', "content", "created_at", "hashtag", "comments", "image")
+        fields = ("id", "user", "content", "created_at", "hashtag", "comments", "image")
 
     def get_comments(self, obj):
         comments = Comment.objects.filter(post=obj)
@@ -82,4 +89,4 @@ class PostDetailSerializer(serializers.ModelSerializer):
 class SchedulePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'user', "content", "is_post", "schedule_time")
+        fields = ("id", "user", "content", "is_post", "schedule_time")

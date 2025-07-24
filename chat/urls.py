@@ -10,7 +10,7 @@ from chat.views import (
     HashtagViewSet,
 )
 
-app_name = 'chat'
+app_name = "chat"
 
 router = routers.DefaultRouter()
 

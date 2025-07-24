@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import Q
 
-from django.shortcuts import render
-from rest_framework import viewsets, permissions
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 from chat.models import Profile, Follow, Post, SchedulePost, Hashtag
 from chat.paginations import StandardResultsSetPagination
@@ -20,11 +19,15 @@ from chat.serializers import (
 
 User = get_user_model()
 
+
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ["user__username"]
+
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return ProfileListSerializers
         return ProfileDetailSerializer
 
@@ -38,6 +41,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class FollowViewSet(viewsets.ModelViewSet):
     serializer_class = FollowSerializer
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ["user__username"]
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
@@ -54,9 +59,11 @@ class FollowViewSet(viewsets.ModelViewSet):
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ["user__username", "hashtag__name"]
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return PostListSerializer
         return PostDetailSerializer
 
@@ -71,6 +78,7 @@ class PostViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated(), IsOwnerOrReadOnly()]
         return [IsAuthenticated()]
 
+
 class SchedulePostViewSet(viewsets.ModelViewSet):
     serializer_class = PostListSerializer
     permission_classes = [SchedulePostPermission]
@@ -83,6 +91,7 @@ class SchedulePostViewSet(viewsets.ModelViewSet):
                 models.Q(is_post=True) & models.Q(user=user)
             )
         return SchedulePost.objects.filter(is_post=True)
+
 
 class HashtagViewSet(viewsets.ModelViewSet):
     queryset = Hashtag.objects.all()
