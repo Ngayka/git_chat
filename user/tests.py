@@ -1,4 +1,3 @@
-import self
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient, APITestCase
@@ -8,17 +7,17 @@ from rest_framework import status
 User = get_user_model()
 
 
-# class AccountTest(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#
-#     def test_create_account(self):
-#         url = reverse("register/")
-#         data = {'username': 'user1',
-#                 'email': 'user1@example.com',
-#                 'password': 'user_password'}
-#         response = self.client.post(url, data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+class AccountTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_create_account(self):
+        url = reverse("user:create")
+        data = {'username': 'user1',
+                'email': 'user1@example.com',
+                'password': 'user_password'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 

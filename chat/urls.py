@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from chat.permissions import SchedulePostPermission
 from chat.views import (
     ProfileViewSet,
     FollowViewSet,

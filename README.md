@@ -64,6 +64,19 @@ CELERY_BROKER_URL=redis://redis:6379/0
 
 ---
 
+### Running Tests
+
+To run tests successfully, please use the SQLite database instead of PostgreSQL.
+By default, the project is configured to use PostgreSQL for development, but tests require SQLite for simplicity.
+
+Steps:
+
+Comment out or disable the PostgreSQL database settings in your settings.py (or equivalent config).
+
+Uncomment or enable the SQLite3 database settings.
+
+This switch allows the test suite to run quickly and without external dependencies.
+
 ### 3. Build and run the project
 
 ```bash

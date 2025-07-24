@@ -42,7 +42,7 @@ class FollowViewSet(viewsets.ModelViewSet):
     serializer_class = FollowSerializer
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ["user__username"]
+    filterset_fields = ["follower__username", "following__username"]
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
@@ -51,10 +51,10 @@ class FollowViewSet(viewsets.ModelViewSet):
         follow_type = self.request.query_params.get("type")
 
         if follow_type == "followers":
-            return Follow.objects.filter(follower=user)
+            return Follow.objects.filter(following=user).order_by("id")
         if follow_type == "following":
-            return Follow.objects.filter(following=user)
-        return Follow.objects.all()
+            return Follow.objects.filter(follower=user).order_by("id")
+        return Follow.objects.all().order_by("id")
 
 
 class PostViewSet(viewsets.ModelViewSet):
