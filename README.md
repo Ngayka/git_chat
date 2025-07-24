@@ -20,7 +20,7 @@ A RESTful social media API built with Django REST Framework, PostgreSQL, Celery,
 social_api/
 │
 ├── social_api/              # Django project settings
-├── app/                     # Main Django app
+├── chat/                     # Main Django app
 ├── Dockerfile               # Docker config for Django
 ├── docker-compose.yml       # Services: Django, Postgres, Redis, Celery
 ├── requirements.txt
